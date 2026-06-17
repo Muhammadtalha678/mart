@@ -7,26 +7,23 @@ import cors from 'cors'
 
 const app = express()
 
-app.use(cors("*"))
+app.use(cors({origin:"*"}))
 
 app.use(express.json()) //parsing the request
+
+app.get('/',(req,res)=>{
+    res.send("Hello world")
+})
+app.use('/api/auth',AuthRouter)
+app.use('/api',CategoryRouter)
 
 connectDb().then(() => {
     app.listen(envConfig.PORT,() => {
         console.log(`Server successfully running on port ${envConfig.PORT}`);
     })
 
-    app.use('/api/auth',AuthRouter)
-    app.use('/api/auth',CategoryRouter)
 }).catch((e)=>{
     console.log("err",e);
-    
+    process.exit(1)
 })
 
-app.get('/',(req,res)=>{
-    res.send("Hello world")
-})
-
-// nn45SNrDQGFL282Q
-
-// ferozuddintalha_db_user
