@@ -31,10 +31,13 @@ const objectIdValidator = async (value, helpers) => {
 };
 const productNameExistsValidator = async (value, helpers) => {
     const lowerName = value.toLowerCase().trim()
-        
-    const existingProduct = await ProductModal.findOne({
-            name:lowerName
-        })
+    const productId = helpers.prefs?.context?.productId
+    
+    const query = {name:lowerName}
+    if (productId){
+        query._id = {$ne:productId}
+    }
+    const existingProduct = await ProductModal.findOne(query)
 
     // FIXED: If either check fails, throw a native Joi validation error manually
     if (existingProduct) {

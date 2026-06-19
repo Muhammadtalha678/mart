@@ -23,7 +23,10 @@ import { sendResponse } from "../lib/helper/send_response.js";
 export const validateRequest = (validationSchema) => async (req, res, next) => {
     try {
         // FIXED: Using validateAsync with await handles both sync rules and .external() database checks
-        const value = await validationSchema.validateAsync(req.body, { abortEarly: false });
+        const value = await validationSchema.validateAsync(req.body, {
+             abortEarly: false,
+             context:{productId:req.params.id} 
+            });
         
         // Joi can mutate and sanitize data (like trimming strings), so assign it back to req.body
         req.body = value; 
