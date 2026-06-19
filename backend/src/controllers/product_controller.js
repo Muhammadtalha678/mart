@@ -157,9 +157,9 @@ export const updatesingleproductController = async (req,res) => {
     let detailImagesLocalPaths
     try {
         const {id} = req.params
-        if (!id || !mongoose.Types.ObjectId.isValid(id)) {
-                    return sendResponse(res, 400, true, { general: "Invalid Product Id" }, null);
-                }
+        // if (!id || !mongoose.Types.ObjectId.isValid(id)) {
+        //             return sendResponse(res, 400, true, { general: "Invalid Product Id" }, null);
+        //         }
         const files = req.files
         const {
             name,
@@ -254,7 +254,7 @@ export const updatesingleproductController = async (req,res) => {
         })
         console.log(uploadedPublicIds);
         
-        return sendResponse(res, 200, false, null, {message: "Products added successfully" })
+        return sendResponse(res, 200, false, null, {message: "Product updated successfully" })
     } catch (error) {
         // agr error ajata ha save product krny ma db ka to phr banner or
         //  details image ki public id jo array ma save krwau thi hm dono ki public ids ko

@@ -29,6 +29,31 @@ const objectIdValidator = async (value, helpers) => {
 
     return value; // Returns the valid value if successful
 };
+const verifyProductExistingValidator = async(value,helpers) => {
+    const productId = helpers.prefs?.context?.productId
+    if (productId){
+        const isMongooseId = mongoose.Types.ObjectId.isValid(productId);
+        let productExists = false;
+
+        if (isMongooseId) {
+            productExists = await ProductModal.findById(productId);
+        }
+        if (!isMongooseId || !productExists) {
+        throw new joi.ValidationError(
+            'ValidationError',
+            [
+                {
+                    message: 'Invalid Product Id or Product does not exist.',
+                    path: ['id'], // Maps it perfectly to your middleware's field selector
+                    type: 'any.invalid',
+                },
+            ],
+            value
+        );
+    }
+    }
+    return value
+}
 const productNameExistsValidator = async (value, helpers) => {
     const lowerName = value.toLowerCase().trim()
     const productId = helpers.prefs?.context?.productId
@@ -58,7 +83,7 @@ const productNameExistsValidator = async (value, helpers) => {
 };
 
 export const productValidation = joi.object({
-  name: joi.string().min(3).max(255).required().external(productNameExistsValidator).messages({
+  name: joi.string().min(3).max(255).required().external(verifyProductExistingValidator).external(productNameExistsValidator).messages({
     'string.base': 'Product name must be a text string',
     'string.empty': 'Product name is required',
     'string.min': 'Product name must be at least 3 characters long',
