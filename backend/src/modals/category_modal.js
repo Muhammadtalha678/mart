@@ -1,4 +1,7 @@
 import mongoose from 'mongoose'
+import cloudinary from '../lib/configs/cloudinary_config.js'
+import {extractPublicId} from '../lib/helper/extract_public_id.js'
+import {ProductModal} from '../modals/product_modal.js'
 
 const CategorySchema = new mongoose.Schema({
     name:{
@@ -24,7 +27,32 @@ const CategorySchema = new mongoose.Schema({
 CategorySchema.pre("findOneAndDelete",async function() {
     try {
         const categoryId = this.getQuery()._id
-        await mongoose.model("product").deleteMany({category_id:categoryId})
+         if (!categoryId) return next(); // Agar ID nahi milti toh agle process par jao
+
+        // 1. Delete karne se pehle saare matching products ka data nikalen
+        const productsToDelete = await mongoose.model("product").find({ category_id: categoryId });
+        
+        const deletePromises = [];
+        
+        if (productsToDelete.length > 0) {
+                // 2. Loop chala kar saari images ke promises array mein daalein
+                productsToDelete.forEach(product => {
+                    if (product.banner_image) {
+                        deletePromises.push(cloudinary.uploader.destroy(extractPublicId(product.banner_image)));
+                    }
+                    if (product.detail_images && product.detail_images.length > 0) {
+                        product.detail_images.forEach(imageUrl => {
+                            deletePromises.push(cloudinary.uploader.destroy(extractPublicId(imageUrl)));
+                        });
+                    }
+                });}
+        
+        const products = await mongoose.model("product").deleteMany({category_id:categoryId})
+        // 3. Cloudinary se saari images ek sath urayein
+        if (deletePromises.length > 0) {
+            await Promise.all(deletePromises);
+            // console.log(`Cloudinary assets deleted for ${productsToDelete.length} products.`);
+        }
     } catch (error) {
         throw error
     }
