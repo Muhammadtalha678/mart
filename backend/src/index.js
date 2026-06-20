@@ -5,11 +5,12 @@ import AuthRouter from './routers/auth_route.js'
 import CategoryRouter from './routers/category_route.js'
 import ProductRouter from './routers/product_route.js'
 import cors from 'cors'
-
+import cookieParser from 'cookie-parser'
 const app = express()
 
-app.use(cors({origin:"*"}))
+app.use(cors({origin:"*",credentials:true}))
 
+app.use(cookieParser()) // 3. LAZMI MIDDLEWARE: Iske bina req.cookies khali milega
 app.use(express.json()) //parsing the request
 
 app.get('/',(req,res)=>{

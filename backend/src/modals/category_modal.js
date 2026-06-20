@@ -24,7 +24,7 @@ const CategorySchema = new mongoose.Schema({
 CategorySchema.pre("findOneAndDelete",async function() {
     try {
         const categoryId = this.getQuery()._id
-        await mongoose.model("product").deleteMany({categoryId})
+        await mongoose.model("product").deleteMany({category_id:categoryId})
     } catch (error) {
         throw error
     }

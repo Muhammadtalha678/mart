@@ -4,11 +4,10 @@ import {envConfig} from '../lib/configs/env_config.js'
 import UserModal from '../modals/user_modal.js'
 export const AuthorizeUser = async(req,res,next) => {
     try {
-        const authHeader = req?.headers?.authorization
-        if (!authHeader){
-            return sendResponse(res,401,true,{general:"Invalid access token"},null)
+        const token = req?.cookies?.access_token || req?.headers?.authorization?.split(' ')[1]
+        if (!token){
+            return sendResponse(res,401,true,{general:"Access Denied. No token provided"},null)
         }
-        const token = authHeader.split(' ')[1]
         let decoded;
         try {
             decoded = jwt.verify(token, envConfig.MART_SECRET)

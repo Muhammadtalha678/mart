@@ -42,8 +42,19 @@ export const loginController = async(req,res) => {
          const data = {
             name:user.name,
             email:user.email,
-            accessToken:access_token
+            // accessToken:access_token
         }
+        res.cookie(
+            'access_token',access_token,{
+                httpOnly:true, // mtlb srf web or server apas ma ya token share krskty 
+                // hain javascript ka code document.cookie ise read nahi kar sakta (Xss Attack)  
+                secure: process.env.NODE_ENV === 'Production', // mtlb cookie transfer 
+                // jb hogi jb https live ho websitewrna local pr false rhy ga 
+                sameSite:'none', //mtlb hmara backend or server dono alg alg deploy hain domain pr is wja sy none
+                maxAge: 7 * 24 * 60 * 60 * 1000,
+                path: '/' //mtlb hr route pr cookie sath jay gi frontend sy backend ky hr route pr
+            }
+        )
        return sendResponse(res,200,false,{},{...data,message:"User Login Successfully"})
     } catch (error) {
         
