@@ -1,7 +1,6 @@
 import mongoose from 'mongoose'
 import cloudinary from '../lib/configs/cloudinary_config.js'
 import {extractPublicId} from '../lib/helper/extract_public_id.js'
-import {ProductModal} from '../modals/product_modal.js'
 
 const CategorySchema = new mongoose.Schema({
     name:{
