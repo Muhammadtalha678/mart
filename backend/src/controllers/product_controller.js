@@ -36,7 +36,10 @@ export const addproductController = async (req,res) => {
         
         // upload the banner image to cloudinary and get the public id and push in array
         const bannerUpload = await cloudinary.uploader.upload(
-            bannerImageLocalPath,{folder:"mart"}
+            bannerImageLocalPath,{folder:"mart",transformation:[
+                    {width:1000,crop:"limit"},
+                    {fetch_format:"webp",quality:"auto:good"},
+                ]}
         )
         const bannerUploadPublicId = bannerUpload.public_id
         uploadedPublicIds.push(
@@ -45,7 +48,12 @@ export const addproductController = async (req,res) => {
         
         // upload the detail images to cloudinary and get the public id and push in array
         const detailImagesUpload = await Promise.all(detailImagesLocalPaths.map(
-            imageUrl => cloudinary.uploader.upload(imageUrl,{folder:"mart"})
+            imageUrl => cloudinary.uploader.upload(imageUrl,{
+                folder:"mart",transformation:[
+                    {width:1000,crop:"limit"},
+                    {fetch_format:"webp",quality:"auto:good"},
+                ]
+            })
         ))
         // // Unki IDs save karlein taake agar error aaye toh delete kar saken
         const detailImagesUploadPublicId = detailImagesUpload.map(u => u.public_id)
@@ -70,7 +78,7 @@ export const addproductController = async (req,res) => {
             if (fs.existsSync(path)) fs.unlinkSync(path)
             
         })
-        console.log(uploadedPublicIds);
+        // console.log(uploadedPublicIds);
         
         return sendResponse(res, 200, false, null, {message: "Products added successfully" })
     } catch (error) {
@@ -195,7 +203,10 @@ export const updatesingleproductController = async (req,res) => {
         
         // upload the banner image to cloudinary and get the public id and push in array
         const bannerUpload = await cloudinary.uploader.upload(
-            bannerImageLocalPath,{folder:"mart"}
+            bannerImageLocalPath,{folder:"mart",transformation:[
+                { width: 1000, crop: "limit" }, 
+                { fetch_format: "webp", quality: "auto:good" }
+            ]}
         )
         const bannerUploadPublicId = bannerUpload.public_id
         uploadedPublicIds.push(
@@ -204,7 +215,10 @@ export const updatesingleproductController = async (req,res) => {
         
         // upload the detail images to cloudinary and get the public id and push in array
         const detailImagesUpload = await Promise.all(detailImagesLocalPaths.map(
-            imageUrl => cloudinary.uploader.upload(imageUrl,{folder:"mart"})
+            imageUrl => cloudinary.uploader.upload(imageUrl,{folder:"mart",transformation:[
+                { width: 1000, crop: "limit" }, 
+                { fetch_format: "webp", quality: "auto:good" }
+            ]})
         ))
         // // Unki IDs save karlein taake agar error aaye toh delete kar saken
         const detailImagesUploadPublicId = detailImagesUpload.map(u => u.public_id)
