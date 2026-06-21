@@ -69,3 +69,23 @@ export const loginController = async(req,res) => {
         return sendResponse(res,500,true,{ general: error.message },null)
     }
 }
+export const logoutController = async(req,res) => {
+    try {
+        const clientType= req.get('X-Client-Type')
+
+        res.clearCookie('access_token',{
+                    httpOnly:true, // mtlb srf web or server apas ma ya token share krskty 
+                    // hain javascript ka code document.cookie ise read nahi kar sakta (Xss Attack)  
+                    secure: process.env.NODE_ENV === 'Production', // mtlb cookie transfer 
+                    // jb hogi jb https live ho websitewrna local pr false rhy ga 
+                    sameSite:'none', //mtlb hmara backend or server dono alg alg deploy hain domain pr is wja sy none
+                    path: '/' //mtlb hr route pr cookie sath jay gi frontend sy backend ky hr route pr
+                })
+        const userName = req.user?.name || "User";
+
+        return sendResponse(res, 200, false, {}, { message: `${userName} Web Logout successful. Cookie cleared.` });
+        } catch (error) {
+        return sendResponse(res,500,true,{ general: error.message },null)
+        
+    }
+}
