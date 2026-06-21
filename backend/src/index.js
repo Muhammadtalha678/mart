@@ -11,8 +11,7 @@ const app = express()
 app.use(cors({origin:"*",credentials:true}))
 
 app.use(cookieParser()) // 3. LAZMI MIDDLEWARE: Iske bina req.cookies khali milega
-app.use(express.json({limit:'5mb'})) //parsing the request
-app.use(express.urlencoded({limit:'5mb',extended:true})) //parsing the request
+app.use(express.json()) //parsing the request
 
 app.get('/',(req,res)=>{
     res.send("Hello world")
