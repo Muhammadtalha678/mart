@@ -1,0 +1,9 @@
+node_modules
+.env
+src/seeder.js
+src/categoryproductSeeder.js
+
+src/imageFolder
+.git
+.gitignore
+README.md
