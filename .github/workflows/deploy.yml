@@ -21,7 +21,8 @@ jobs:
     - name: Build and Push Docker Image
       uses: docker/build-push-action@v5
       with:
-        context: .
+        context: ./backend        # GitHub ko bataya ke code backend folder mein hai
+        file: ./backend/Dockerfile # Dockerfile ka sahi rasta
         push: true
         tags: muhammadtalha678/mart-backend:latest  # Aap ka Docker Hub repo aur latest tag
 
