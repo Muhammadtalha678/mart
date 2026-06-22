@@ -24,9 +24,11 @@ jobs:
         context: ./backend        # GitHub ko bataya ke code backend folder mein hai
         file: ./backend/Dockerfile # Dockerfile ka sahi rasta
         push: true
+          # Aap ka Docker Hub repo aur latest tag
+          # Aap ka Docker Hub repo aur latest tag
         tags: | 
-          muhammadtalha678/mart-backend:v${{github.run_number}}  # Aap ka Docker Hub repo aur latest tag
-          muhammadtalha678/mart-backend:latest  # Aap ka Docker Hub repo aur latest tag
+          muhammadtalha678/mart-backend:v${{github.run_number}}  
+          muhammadtalha678/mart-backend:latest  
     
     - name: Clone HF Space
       run: |
@@ -38,7 +40,7 @@ jobs:
         cd hf-space
 
         cat > Dockerfile << EOF
-        FROM muhammadtalha678/mart-backend:V${{ github.run_number }}
+        FROM muhammadtalha678/mart-backend:v${{ github.run_number }}
         EOF
     
       # Commit and Push
@@ -51,6 +53,6 @@ jobs:
 
         git add Dockerfile
 
-        git commit -m "Deploy image V${{ github.run_number }}" || echo "No changes"
+        git commit -m "Deploy image v${{ github.run_number }}" || echo "No changes"
 
         git push  
