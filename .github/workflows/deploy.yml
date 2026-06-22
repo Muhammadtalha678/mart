@@ -24,9 +24,33 @@ jobs:
         context: ./backend        # GitHub ko bataya ke code backend folder mein hai
         file: ./backend/Dockerfile # Dockerfile ka sahi rasta
         push: true
-        tags: muhammadtalha678/mart-backend:latest  # Aap ka Docker Hub repo aur latest tag
-
-    - name: Force Restart Hugging Face Space (Clear Cache)
+        tags: | 
+          muhammadtalha678/mart-backend:v${{github.run_number}}  # Aap ka Docker Hub repo aur latest tag
+          muhammadtalha678/mart-backend:latest  # Aap ka Docker Hub repo aur latest tag
+    
+    - name: Clone HF Space
       run: |
-        curl -X POST "https://huggingface.co" \
-             -H "Authorization: Bearer ${{ secrets.HF_MARTBACKEND }}"
+       git clone https://oauth2:${{ secrets.HF_MARTBACKEND }}@huggingface.co/spaces/Muhammad51059579/mart_backend hf-space
+      
+     # Dockerfile update with exact SHA
+    - name: Update Dockerfile
+      run: |
+        cd hf-space
+
+        cat > Dockerfile << EOF
+        FROM muhammadtalha678/mart-backend:V${{ github.run_number }}
+        EOF
+    
+      # Commit and Push
+    - name: Push changes to HF Space
+      run: |
+        cd hf-space
+
+        git config user.email "github-actions@github.com"
+        git config user.name "GitHub Actions"
+
+        git add Dockerfile
+
+        git commit -m "Deploy image V${{ github.run_number }}" || echo "No changes"
+
+        git push  
