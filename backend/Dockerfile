@@ -9,7 +9,7 @@ COPY package*.json ./
 
 # Production dependencies install karein (Fast and clean build)
 # RUN npm ci --only=production
-RUN npm ci --only=production
+RUN npm ci
 
 # Baqi saara source code copy karein
 COPY . .
@@ -18,4 +18,4 @@ COPY . .
 ENV PORT=7860
 EXPOSE 7860
 
-CMD ["npm","run,"dev"]
+CMD ["npm","run","dev"]
